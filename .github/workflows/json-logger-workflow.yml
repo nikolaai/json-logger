@@ -1,0 +1,36 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    types: [ closed ]
+    branches: [ main ]
+
+env:
+  GHCR_USERNAME: nikolaai
+  GHCR_REPOSITORY: json-logger
+  DOCKER_BUILDKIT: 1
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Build Docker image
+        run: docker build -t ghcr.io/$GHCR_USERNAME/$GHCR_REPOSITORY:latest --progress=plain .
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push Docker image to GitHub Container Registry
+        run: |
+          IMAGE_TAG="ghcr.io/$GHCR_USERNAME/$GHCR_REPOSITORY:latest"
+          docker push $IMAGE_TAG
