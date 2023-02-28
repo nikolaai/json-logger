@@ -18,17 +18,18 @@ jobs:
     if: github.event.pull_request.merged == true
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2.5.2 # update to use Node.js 16
+        with:
+          ref: main
       
       - name: Set Docker image tag
-        id: set-tag
-        run: echo "::set-output name=tag::$(date +'%Y%m%d-%H%M%S')"
+        run: echo "TAG=$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_ENV
 
       - name: Build Docker image
-        run: docker build -t ghcr.io/$GHCR_USERNAME/$GHCR_REPOSITORY:latest --progress=plain .
+        run: docker build -t ghcr.io/$GHCR_USERNAME/$GHCR_REPOSITORY:${{ env.TAG }} --progress=plain .
 
       - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2.0.0
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -36,5 +37,5 @@ jobs:
 
       - name: Push Docker image to GitHub Container Registry
         run: |
-          IMAGE_TAG="ghcr.io/$GHCR_USERNAME/$GHCR_REPOSITORY:${{ steps.set-tag.outputs.tag }}"
+          IMAGE_TAG="ghcr.io/$GHCR_USERNAME/$GHCR_REPOSITORY:${{ env.TAG }}"
           docker push $IMAGE_TAG
