@@ -18,7 +18,7 @@ jobs:
     if: github.event.pull_request.merged == true
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2 # update to use Node.js 16
+        uses: actions/checkout@v2
         with:
           ref: main
       
