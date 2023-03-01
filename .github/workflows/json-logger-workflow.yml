@@ -23,7 +23,7 @@ jobs:
           ref: main
       
       - name: Set Docker image tag
-        run: echo "TAG=1.0.$(( $GITHUB_RUN_NUMBER - 1 ))" >> $GITHUB_ENV
+        run: echo "TAG=1.1.$(( $GITHUB_RUN_NUMBER - 21 ))" >> $GITHUB_ENV
 
       - name: Build Docker image
         run: docker build -t ghcr.io/$GHCR_USERNAME/$GHCR_REPOSITORY:${{ env.TAG }} -t ghcr.io/$GHCR_USERNAME/$GHCR_REPOSITORY:latest --progress=plain .
