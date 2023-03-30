@@ -47,6 +47,13 @@ jobs:
           docker push ghcr.io/$GHCR_USERNAME/$GHCR_REPOSITORY:latest
 
       - name: Scan Docker image with trivy
-        uses: aquasecurity/trivy-action@v1
+        uses: aquasecurity/trivy-action@master
         with:
           image-ref: ghcr.io/$GHCR_USERNAME/$GHCR_REPOSITORY:${{ env.TAG }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: 'trivy-results.sarif'
