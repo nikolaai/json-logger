@@ -45,3 +45,8 @@ jobs:
           IMAGE_TAG="ghcr.io/$GHCR_USERNAME/$GHCR_REPOSITORY:${{ env.TAG }}"
           docker push $IMAGE_TAG
           docker push ghcr.io/$GHCR_USERNAME/$GHCR_REPOSITORY:latest
+
+      - name: Scan Docker image with trivy
+        uses: aquasecurity/trivy-action@v1
+        with:
+          image-ref: ghcr.io/$GHCR_USERNAME/$GHCR_REPOSITORY:${{ env.TAG }}
