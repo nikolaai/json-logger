@@ -25,11 +25,8 @@ jobs:
           ref: refs/heads/main
       
       - name: Set Docker image tag
-        # run: echo "TAG=1.1.$(( $GITHUB_RUN_NUMBER - 21 ))" >> $GITHUB_ENV
         run: |
-          YEAR_MONTH=$(date +%Y.%m)
-          IMAGE_COUNT=$(echo "$(curl -s -H \"Accept: application/vnd.github.v3+json\" https://api.github.com/repos/$GITHUB_REPOSITORY/package/container/$GHCR_REPOSITORY/versions?per_page=100 | jq '.[].name' | grep -c \"^$YEAR_MONTH.\") + 1" | bc)
-          TAG=$YEAR_MONTH.$IMAGE_COUNT
+          TAG=$(date +%y%m%d.%H%M%S)
           echo "TAG=$TAG" >> $GITHUB_ENV
 
       - name: Build Docker image
